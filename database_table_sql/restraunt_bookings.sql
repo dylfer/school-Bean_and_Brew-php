@@ -7,6 +7,7 @@ CREATE TABLE `bookings` (
   `restaurant` varchar(100) NOT NULL,
   `table_no` int(11) NOT NULL,
   `number_people` int(11) NOT NULL,
+  `booking_status` ENUM('pending', 'confirmed', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`booking_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

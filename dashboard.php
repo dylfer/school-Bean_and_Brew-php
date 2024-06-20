@@ -1,5 +1,6 @@
 <?php
-session_start();
+  include 'DB_conect.php';
+  include 'components/authenticate.php';
 
 
 ?>

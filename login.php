@@ -3,38 +3,54 @@ include 'functions/uuid.php';
 session_start(); 
 if (isset($_POST['login'])) { 
 
-include 'DB_conect.php';
+  include 'DB_conect.php';
 
 
-// Prepare and bind the SQL statement 
-$stmt = $mysqli->prepare("SELECT id, password FROM users WHERE username = ?"); $stmt->bind_param("s", $username); 
+  // Prepare and bind the SQL statement 
+  $stmt = $mysqli->prepare("SELECT id, password FROM users WHERE username = ?"); $stmt->bind_param("s", $username); 
 
-// Get the form data 
-$username = $_POST['username']; $password = $_POST['password']; 
+  // Get the form data 
+  $username = $_POST['username']; $password = $_POST['password']; 
 
-// Execute the SQL statement 
-$stmt->execute(); $stmt->store_result(); 
+  // Execute the SQL statement 
+  $stmt->execute(); $stmt->store_result(); 
 
-// Check if the user exists 
-if ($stmt->num_rows > 0) { 
+  // Check if the user exists 
+  if ($stmt->num_rows > 0) { 
 
-// Bind the result to variables 
-$stmt->bind_result($id, $hashed_password); 
+    // Bind the result to variables 
+    $stmt->bind_result($id, $hashed_password); 
 
-// Fetch the result 
-$stmt->fetch(); 
+    // Fetch the result 
+    $stmt->fetch(); 
+    $stmt->close(); 
 
-// Verify the password 
-if (password_verify($password, $hashed_password)) { 
+    // Verify the password 
+    if (hash_hmac('sha256', $password, 'test') == $hashed_password){ 
 
-// Set the session variables 
-$_SESSION['loggedin'] = true; $_SESSION['id'] = $id; $_SESSION['username'] = $username; $_SESSION["session_id"] = guidv4();
+      // Set the session variables 
+      $_SESSION['loggedin'] = true; $_SESSION['username'] = $username; session_id(uuidv4()); $_SESSION['user_id'] = $id;
 
-// Redirect to the user's dashboard 
-header("Location: dashboard.php"); exit; } else { $response =  "Incorrect password!"; } } else { $response = "User not found!"; } 
+      $stmt_session = $mysqli->prepare("UPDATE clients SET user_id = ?, login_status = ? WHERE session_id == ?;"); $stmt->bind_param("sss", $user_id, true, session_id());
+      $stmt_session->execute();
+      $stmt_session->close();
+      // Redirect to the user's dashboard 
+      header("Location: dashboard.php"); 
+      exit; 
+    } else { 
+      $response =  "invalid crdentials!"; 
+    } 
+  } else { 
+    $response = "invalid crdentials!"; 
+  } 
 
-// Close the connection 
-$stmt->close(); $mysqli->close(); }else{
+  // Close the connection 
+  
+  include 'DB_close.php';
+}else{
+  include 'DB_conect.php';
+  include 'components/session.php';
+  include 'DB_close.php';
   $response = ""
 }
 

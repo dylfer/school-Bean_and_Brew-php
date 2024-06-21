@@ -9,7 +9,8 @@ $stmt = $mysqli->prepare("INSERT INTO users (username, email, password) VALUES (
 $username = $_POST['username']; $email = $_POST['email']; $password = $_POST['password']; 
 
 // Hash the password 
-$password = password_hash($password, PASSWORD_DEFAULT); 
+$password = hash_hmac('sha256', $password, 'test');
+
 
 // Execute the SQL statement 
 if ($stmt->execute()) {$sucsess = "New account created successfully!"; } else { echo "Error: " . $stmt->error; } 
@@ -18,7 +19,11 @@ if ($stmt->execute()) {$sucsess = "New account created successfully!"; } else { 
 
 
 // Close the connection 
-$stmt->close(); $mysqli->close(); } else{
+$stmt->close(); $mysqli->close(); 
+} else{
+    include 'DB_conect.php';
+    include 'components/session.php';
+    include 'DB_close.php';
     $sucsess = "";
 }
 

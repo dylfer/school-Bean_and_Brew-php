@@ -1,6 +1,9 @@
 <?php
   include 'DB_conect.php';
+  include 'components/session.php';
   include 'components/authenticate.php';
+  include 'DB_close.php';
+
 
 
 ?>

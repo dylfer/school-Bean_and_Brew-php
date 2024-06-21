@@ -1,5 +1,5 @@
 <?php
-function guidv4() {
+function uuidv4() {
     // Generate 16 bytes (128 bits) of random data or use the data passed into the function.
     $data = random_bytes(16);
     assert(strlen($data) == 16);

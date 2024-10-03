@@ -1,7 +1,7 @@
 <?php
-  include 'DB_conect.php';
+  include 'components/DB_conect.php';
   include 'components/session.php';
-  include 'DB_close.php';
+  include 'components/DB_close.php';
 ?>
 
 

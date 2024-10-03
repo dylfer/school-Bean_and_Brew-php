@@ -51,7 +51,7 @@ if (isset($_POST['login'])) {
   include 'DB_conect.php';
   include 'components/session.php';
   include 'DB_close.php';
-  $response = ""
+  $response = "";
 }
 
 ?>

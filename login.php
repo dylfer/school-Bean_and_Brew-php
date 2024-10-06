@@ -1,9 +1,8 @@
 <?php 
 include 'functions/uuid.php';
-session_start(); 
-if (isset($_POST['login'])) { 
 
-  include 'DB_conect.php';
+include 'components/session.php';
+if (isset($_POST['login'])) { 
 
 
   // Prepare and bind the SQL statement 
@@ -31,7 +30,9 @@ if (isset($_POST['login'])) {
       // Set the session variables 
       $_SESSION['loggedin'] = true; $_SESSION['username'] = $username; session_id(uuidv4()); $_SESSION['user_id'] = $id;
 
-      $stmt_session = $mysqli->prepare("UPDATE clients SET user_id = ?, login_status = ? WHERE session_id == ?;"); $stmt->bind_param("sss", $user_id, true, session_id());
+      $session_id = session_id();
+      $t = true;
+      $stmt_session = $mysqli->prepare("UPDATE clients SET user_id = ?, login_status = ? WHERE session_id == ?;"); $stmt->bind_param("sss", $user_id, $t, $session_id);
       $stmt_session->execute();
       $stmt_session->close();
       // Redirect to the user's dashboard 
@@ -43,16 +44,11 @@ if (isset($_POST['login'])) {
   } else { 
     $response = "invalid crdentials!"; 
   } 
-
   // Close the connection 
-  
-  include 'DB_close.php';
-}else{
-  include 'DB_conect.php';
-  include 'components/session.php';
-  include 'DB_close.php';
+}else{  
   $response = "";
 }
+include 'components/DB_close.php';
 
 ?>
 

@@ -1,5 +1,4 @@
 <?php
-  include 'components/DB_conect.php';
   include 'components/session.php';
   include 'components/DB_close.php';
 ?>
@@ -20,7 +19,9 @@
     <?php
       include 'components/nav.php';
       ?>
-      <div class="main">
+      <div class="text-2xl flex flex-col items-center justify-center w-screen h-screen">
+        <h1 class="text-center">Welcome to Bean and Brew</h1>
+        <p class="text-center">The best coffee shop in town</p>
     </div>
       <?php
       include 'components/footer.php';

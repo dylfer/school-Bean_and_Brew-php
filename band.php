@@ -11,6 +11,9 @@
     <p class="text-red-700 w-screen flex h-1/2 justify-center items-center">
 
         your ip has been band. duration: <?= htmlspecialchars($_GET["duration"]);?>. reason: <?= htmlspecialchars($_GET["reason"]);?>
+        <?php if (isset($_GET["warning"])) { 
+             echo "warning: " . htmlspecialchars($_GET["warning"]);
+        }?>
     </p>
     <script src="script.js"></script>
   </body>

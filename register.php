@@ -1,6 +1,7 @@
-<?php if (isset($_POST['register'])) { 
+<?php 
+include 'components/session.php';
+if (isset($_POST['register'])) { 
 
-include 'DB_conect.php';
 
 // Prepare and bind the SQL statement 
 $stmt = $mysqli->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)"); $stmt->bind_param("sss", $username, $email, $password); 
@@ -21,12 +22,9 @@ if ($stmt->execute()) {$sucsess = "New account created successfully!"; } else { 
 // Close the connection 
 $stmt->close(); $mysqli->close(); 
 } else{
-    include 'DB_conect.php';
-    include 'components/session.php';
-    include 'DB_close.php';
     $sucsess = "";
 }
-
+include 'components/DB_close.php';
 ?>  
 
 <!DOCTYPE html>

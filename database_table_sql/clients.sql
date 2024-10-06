@@ -1,6 +1,8 @@
 CREATE TABLE `clients` (
   `session_id` VARCHAR(36) NOT NULL,
-  `client_id` INT(11) NOT NULL AUTO_INCREMENT, -- user/ device, caried over when session expires
+  `previous_session_id` VARCHAR(36) DEFAULT NULL,
+  `previous_client_id` VARCHAR(36) DEFAULT NULL,
+  `client_id` VARCHAR(36) NOT NULL , -- user/ device, caried over when session expires
   `user_id` INT(11),
   `login_status` BOOLEAN DEFAULT FALSE,
   `pages` TEXT,-- This will store the pages that the user has visited

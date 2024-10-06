@@ -94,7 +94,7 @@ function manage_session($mysqli){
             // }else if($client_id != $_COOKIE["client_id"]){
             //     // user id changes - tampering or stolen session 
             // }else if($user_id != $_SESSION["user_id"]){
-            //     // user id tampering
+            //     // user id tampering. atempt to authenticate with difrent account
             
 
             }else{
@@ -135,6 +135,7 @@ function manage_session($mysqli){
             manage_session($mysqli);
 
         }else if (isset($_COOKIE["client_id"])){
+            session_start();
             $client_id = $_COOKIE["client_id"];
             $session_id = uuidv4();
             session_id($session_id);
@@ -148,6 +149,7 @@ function manage_session($mysqli){
             $stmt_session->execute();
             $stmt_session->close();
         }else{
+            session_start();
             $session_id = uuidv4();
             session_id($session_id);
             $client_id = uuidv4();

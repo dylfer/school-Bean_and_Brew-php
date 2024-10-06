@@ -20,7 +20,7 @@ if ($stmt->execute()) {$sucsess = "New account created successfully!"; } else { 
 
 
 // Close the connection 
-$stmt->close(); $mysqli->close(); 
+$stmt->close();
 } else{
     $sucsess = "";
 }
@@ -37,23 +37,25 @@ include 'components/DB_close.php';
 
         <link href="stlye.css" rel="stylesheet" type="text/css" />
     </head>
-    <body>
+        <body class="flex justify-center items-center w-screen h-screen">
         <?php
             include 'components/nav.php';   
         ?>
-        <form action="register.php" method="post">
-            <label class="sr-only" for="username">Username:</label> 
-            <input id="username"  required="" type="text" /> 
-            <label class="sr-only" for="email">Email:</label>
-            <input id="email" name="email" required="" type="email" />
-            <label class="sr-only" for="password">Password:</label>
-            <input id="password" name="password" required="" type="password" />
-            <input name="register" type="submit" value="Register" />
-            <?php echo $sucsess; ?>
-        </form>
-        <?php
+            <div class="bg-slate-800 rounded-xl p-3">
+                <h1 class="text-white text-center">register</h1>
+                <form class="flex flex-col items-center justify-center" action="login.php" method="POST">
+                    <input class="p-2 m-2" type="text" id="username" name="username" placeholder="username" required>
+                    <input class="p-2 m-2" type="email" id="email" name="email" placeholder="email" required>
+                    <input class="p-2 m-2" type="password" id="password" name="password" placeholder="password" required>
+                    <input class="p-2 m-2" type="password" id="conf_password" name="conf_password" placeholder="confirm password" required>
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['token']; ?>">
+                    <p class="text-red"><?= $sucsess;?></p>
+                    <button class="rounded bg-grey-700 p-1 m-1 text-white" type="submit " value="Login">submit</button>
+                </form>
+            </div>
+            <?php
             include 'components/footer.php';
         ?>  
-    </body>
+        </body>
 </html>
 

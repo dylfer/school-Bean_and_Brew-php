@@ -1,8 +1,10 @@
 <?php
+use Firebase\JWT\JWT;
+require "../vendor/autoload.php";
 if ( ! isset($_SESSION["authenticated"])){
 
 }
-if (isset($_SESSION["authenticated"]) $_SESSION["authenticated"] == false) {
+if ( $_SESSION["authenticated"] == false) {
     try{
         // TODO try unset auith session data (might not even be set)
         $_SESSION["authenticated"] = false;
@@ -34,9 +36,11 @@ $stmt_auth->execute(); $stmt_auth->store_result();
 
 if ($stmt_auth->num_rows > 0 ) {
     $token_secret = null;
-    $stmt_auth->bind_result($token);
+    $stmt_auth->bind_result($token_secret);
     $stmt_auth->fetch();
     $stmt_auth->close();
+    $token = JWT::encode($_SESSION,$token_secret,'HS512')
+
     if ($_SESSION["token"] == $token) {// use jwt to verify token
         $valid = true;
     }else{

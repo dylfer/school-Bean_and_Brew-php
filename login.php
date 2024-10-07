@@ -47,6 +47,7 @@ if (isset($_POST['login'])) {
   // Close the connection 
 }else{  
   $response = "";
+  $_SESSION['csrf'] = bin2hex(random_bytes(32));
 }
 include 'components/DB_close.php';
 
@@ -58,24 +59,13 @@ include 'components/DB_close.php';
     <title>Login</title>
     <meta name="description" content="login" />
     <meta name="keywords" content="login" />
-    <style>
-      body {
-        display: flex;
-        justify-content: center;
-        height: 100vh;
-        margin: 0;
-      }
-      .card {
-        width: 300px;
-      }
-    </style>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="text-center">
+  <body class="text-center flex justify-center h-screen m-0">
     <?php
       include 'components/nav.php'; 
     ?>
-    <div class="card mx-auto mt-5 bg-light">
+    <div class=" mx-auto mt-5 bg-light">
       <form class="card-body form-signin" action="login.php" method="post">
         <h3 class="text-center mb-3">Login</h3>
         <label for="username" class="sr-only">Username:</label>
@@ -97,12 +87,13 @@ include 'components/DB_close.php';
           placeholder="Password"
           required
         />
-        <input
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf']; ?>">
+        <button
           name="login"
           class="btn btn-lg btn-primary btn-block"
           type="submit"
           value="Login"
-        />
+        >login</button>
       </form>
       <?php echo $response ?>
     </div>

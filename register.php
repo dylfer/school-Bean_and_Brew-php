@@ -2,19 +2,18 @@
 include 'components/session.php';
 if (isset($_POST['register'])) { 
 
+$username = htmlspecialchars(stripslashes(trim($_POST['username']))); $email = htmlspecialchars(stripslashes(trim($_POST['email']))); $password = htmlspecialchars(stripslashes(trim($_POST['password']))); 
 
-// Prepare and bind the SQL statement 
-$stmt = $mysqli->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)"); $stmt->bind_param("sss", $username, $email, $password); 
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $error = "Invalid email format";
+}else{
+    $valid = true;
+}
 
-// Get the form data 
-$username = $_POST['username']; $email = $_POST['email']; $password = $_POST['password']; 
+$stmt = $mysqli->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)"); $stmt->bind_param("sss", $username, $email, $password);
 
-// Hash the password 
 $password = hash_hmac('sha256', $password, 'test');
-
-
-// Execute the SQL statement 
-if ($stmt->execute()) {$sucsess = "New account created successfully!"; } else { echo "Error: " . $stmt->error; } 
+if ($stmt->execute()) {$sucsess = "New account created successfully!"; } else { echo "Error: " . $stmt->error; }
 
 
 
@@ -23,6 +22,7 @@ if ($stmt->execute()) {$sucsess = "New account created successfully!"; } else { 
 $stmt->close();
 } else{
     $sucsess = "";
+    $_SESSION['csrf'] = bin2hex(random_bytes(32));
 }
 include 'components/DB_close.php';
 ?>  
@@ -48,7 +48,7 @@ include 'components/DB_close.php';
                     <input class="p-2 m-2" type="email" id="email" name="email" placeholder="email" required>
                     <input class="p-2 m-2" type="password" id="password" name="password" placeholder="password" required>
                     <input class="p-2 m-2" type="password" id="conf_password" name="conf_password" placeholder="confirm password" required>
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['token']; ?>">
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf']; ?>">
                     <p class="text-red"><?= $sucsess;?></p>
                     <button class="rounded bg-grey-700 p-1 m-1 text-white" type="submit " value="Login">submit</button>
                 </form>

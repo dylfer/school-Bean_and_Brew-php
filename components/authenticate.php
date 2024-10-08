@@ -39,10 +39,17 @@ if ($stmt_auth->num_rows > 0 ) {
     $stmt_auth->bind_result($token_secret);
     $stmt_auth->fetch();
     $stmt_auth->close();
-    $token = JWT::encode($_SESSION,$token_secret,'HS512')
-
+    $token = JWT::encode($_SESSION,$token_secret,'HS512');
+    if( $_SESSION["token"] != $_COOKIE["token"]){
+        $stmt_session = $mysqli->prepare("UPDATE clients SET malicious_level=malicious_level+1 , ban_time=?  WHERE ip_address=? "); $stmt_session->bind_param("ss", date('Y-m-d H:i:s'),$_SERVER['REMOTE_ADDR']);
+        $stmt_session->execute();
+        $stmt_session->close();
+        // TODO clear auth session data 
+        header("Location: login.php");
+        exit();
+    }
     if ($_SESSION["token"] == $token) {// use jwt to verify token
-        $valid = true;
+        $valid_auth = true;
     }else{
         // invalid token
         // TODO clear auth session data 

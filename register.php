@@ -45,8 +45,9 @@ if (isset($_POST['register'])) {
         if ($stmt->execute()) {
             #login code
             $token = JWT::encode(["id"=>session_id(),"username"=>$username,"user_id"=>$user_id],$token_secret,'HS512');# add more to payload TOOD get user_id
-            $stmt = $mysqli->prepare("UPDATE clients SET token=? user_id=? WHERE session_id=? "); $stmt->bind_param("sss", $token, $user_id, session_id());
-            $stmt->execute();
+            $stmt_login = $mysqli->prepare("UPDATE clients SET token=?, user_id=?, login_status=? WHERE session_id=? "); $stmt_login->bind_param("ssss", $token, $user_id, true, session_id());
+            $stmt_login->execute();
+            $stmt_login->close();
             $_SESSION['authenticated'] = true;
             $_SESSION['username'] = $username;
             $_SESSION['token'] = $token;

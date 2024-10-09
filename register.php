@@ -1,9 +1,13 @@
 <?php 
+use Firebase\JWT\JWT;
 include 'components/session.php';
 if (isset($_POST['register'])) { 
-
+    if ($_POST['csrf_token'] !== $_SESSION['csrf']) {
+        $error = "Invalid CSRF token";
+        die();
+    }
     require "../vendor/autoload.php";
-    use Firebase\JWT\JWT;
+    
     $error = False;
     $username = htmlspecialchars(stripslashes(trim($_POST['username']))); $email = htmlspecialchars(stripslashes(trim($_POST['email']))); $password = htmlspecialchars(stripslashes(trim($_POST['password']))); 
 
@@ -33,12 +37,27 @@ if (isset($_POST['register'])) {
     }
 
     if (! $error){
+        $token_secret = bin2hex(random_bytes(32));
+        
+        $stmt = $mysqli->prepare("INSERT INTO users (username, email, password, token_secret) VALUES (?, ?, ?, ?)"); $stmt->bind_param("ssss", $username, $email, $password,$token_secret);
 
-        $token = JWT::encode($_SESSION,$token_secret,'HS512');
-        $stmt = $mysqli->prepare("INSERT INTO users (username, email, password, token_secret) VALUES (?, ?, ?)"); $stmt->bind_param("sss", $username, $email, $password,$token_secret);
+        $password = hash_hmac('sha256', $password, $token_secret);
+        if ($stmt->execute()) {
+            #login code
+            $token = JWT::encode(["id"=>session_id(),"username"=>$username,"user_id"=>$user_id],$token_secret,'HS512');# add more to payload TOOD get user_id
+            $stmt = $mysqli->prepare("UPDATE clients SET token=? user_id=? WHERE session_id=? "); $stmt->bind_param("sss", $token, $user_id, session_id());
+            $stmt->execute();
+            $_SESSION['authenticated'] = true;
+            $_SESSION['username'] = $username;
+            $_SESSION['token'] = $token;
+            $_SESSION['user_id'] = $user_id;
+            $_COOKIE['token'] = $token;
+            $sucsess = "New account created successfully!";
+            header("shcool-Bean_and_Brew-php/dashboard.php"); 
 
-        $password = hash_hmac('sha256', $password, 'test');
-        if ($stmt->execute()) {$sucsess = "New account created successfully!"; header("location"); } else { echo "Error: " . $stmt->error; }
+        } else { 
+            echo "Error: " . $stmt->error; 
+        }
 
 
 

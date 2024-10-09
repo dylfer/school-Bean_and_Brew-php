@@ -15,7 +15,7 @@ if ( $_SESSION["authenticated"] == false) {
         
     }
     header("Location: login.php");
-    exit();
+    die();
 }
 $session_id = session_id();
 $stmt_session = $mysqli->prepare("SELECT login_status, user_id FROM clients WHERE session_id=?"); $stmt_session->bind_param("s", $session_id);
@@ -27,7 +27,7 @@ $stmt_session->close();
 if ($loged_in == false) {
     // TODO unset auth session data 
     header("Location: login.php");
-    exit();
+    die();
 }
 
 
@@ -46,7 +46,7 @@ if ($stmt_auth->num_rows > 0 ) {
         $stmt_session->close();
         // TODO clear auth session data 
         header("Location: login.php");
-        exit();
+        die();
     };
     if ($_SESSION["token"] == $token) {// use jwt to verify token
         $valid_auth = true;
@@ -55,13 +55,13 @@ if ($stmt_auth->num_rows > 0 ) {
         // invalid token
         // TODO clear auth session data 
         header("Location: login.php");
-        exit();
+        die();
     };
 
 }else{
     // inconsistency in session data (username, user_id, session_id, login_status)
     // TODO clear auth session data 
     header("Location: login.php");
-    exit();
+    die();
     
 };

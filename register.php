@@ -1,38 +1,50 @@
 <?php 
 include 'components/session.php';
 if (isset($_POST['register'])) { 
-$error = False;
-$username = htmlspecialchars(stripslashes(trim($_POST['username']))); $email = htmlspecialchars(stripslashes(trim($_POST['email']))); $password = htmlspecialchars(stripslashes(trim($_POST['password']))); 
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $error = "Invalid email format";
-}
-$password_number = preg_match('@[0-9]@', $password);
-$password_uppercase = preg_match('@[A-Z]@', $password);
-$password_lowercase = preg_match('@[a-z]@', $password);
-$password_specialChars = preg_match('@[^\w]@', $password);
+    require "../vendor/autoload.php";
+    use Firebase\JWT\JWT;
+    $error = False;
+    $username = htmlspecialchars(stripslashes(trim($_POST['username']))); $email = htmlspecialchars(stripslashes(trim($_POST['email']))); $password = htmlspecialchars(stripslashes(trim($_POST['password']))); 
 
 
- 
-if (! $password_specialChars ){
-    $error = 'Password must contain at least one special character';
-}
-
-if (! $password_uppercase){
-    $error = 'Password must contain at least one uppercase letter';
-}
-
-if (! $error)
-$stmt = $mysqli->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)"); $stmt->bind_param("sss", $username, $email, $password);
-
-$password = hash_hmac('sha256', $password, 'test');
-if ($stmt->execute()) {$sucsess = "New account created successfully!"; } else { echo "Error: " . $stmt->error; }
+    $password_number = preg_match('@[0-9]@', $password);
+    $password_uppercase = preg_match('@[A-Z]@', $password);
+    $password_lowercase = preg_match('@[a-z]@', $password);
+    $password_specialChars = preg_match('@[^\w]@', $password);
 
 
+    
+    if (! $password_specialChars ){
+        $error = 'Password must contain at least one special character';
+    }
+
+    if (! $password_uppercase){
+        $error = 'Password must contain at least one uppercase letter';
+    }
+    if (! $password_lowercase){
+        $error = 'Password must contain at least one lowercase letter';
+    }
+    if (! $password_number){
+        $error = 'Password must contain at least one number';
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Invalid email format";
+    }
+
+    if (! $error){
+
+        $token = JWT::encode($_SESSION,$token_secret,'HS512');
+        $stmt = $mysqli->prepare("INSERT INTO users (username, email, password, token_secret) VALUES (?, ?, ?)"); $stmt->bind_param("sss", $username, $email, $password,$token_secret);
+
+        $password = hash_hmac('sha256', $password, 'test');
+        if ($stmt->execute()) {$sucsess = "New account created successfully!"; header("location"); } else { echo "Error: " . $stmt->error; }
 
 
-// Close the connection 
-$stmt->close();
+
+    }
+    // Close the connection 
+    $stmt->close();
 } else{
     $sucsess = "";
     $_SESSION['csrf'] = bin2hex(random_bytes(32));

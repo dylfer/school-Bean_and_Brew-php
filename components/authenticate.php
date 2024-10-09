@@ -47,19 +47,21 @@ if ($stmt_auth->num_rows > 0 ) {
         // TODO clear auth session data 
         header("Location: login.php");
         exit();
-    }
+    };
     if ($_SESSION["token"] == $token) {// use jwt to verify token
         $valid_auth = true;
-    }else{
+    }
+    else{
         // invalid token
         // TODO clear auth session data 
         header("Location: login.php");
         exit();
-    }
+    };
+
 }else{
     // inconsistency in session data (username, user_id, session_id, login_status)
     // TODO clear auth session data 
     header("Location: login.php");
     exit();
     
-}
+};

@@ -25,10 +25,11 @@ function ban($malicious_level,$ban_time){
         }
     }
 }
-$stmt_malicious = $mysqli->prepare("SELECT malicious_level,client_id,ban_time  FROM clients WHERE ip = ?"); $stmt_session->bind_param("s", $_SERVER['REMOTE_ADDR']);
+$ip = $_SERVER['REMOTE_ADDR'];
+$stmt_malicious = $mysqli->prepare("SELECT malicious_level,client_id,ban_time  FROM clients WHERE ip_address = ?"); $stmt_malicious->bind_param("s",$ip );
 $stmt_malicious->execute(); $stmt_malicious->store_result();
 if ($stmt_malicious->num_rows > 0 ) {
-    $stmt_malicious->bind_result($malicious_level,$last_updated,$client_id,$ban_time);
+    $stmt_malicious->bind_result($malicious_level,$client_id,$ban_time);
     $stmt_malicious->fetch();
     $stmt_malicious->close();
     ban($malicious_level,$ban_time);
@@ -135,7 +136,6 @@ function manage_session($mysqli){
             manage_session($mysqli);
 
         }else if (isset($_COOKIE["client_id"])){
-            session_start();
             $client_id = $_COOKIE["client_id"];
             $session_id = uuidv4();
             session_id($session_id);
@@ -149,7 +149,6 @@ function manage_session($mysqli){
             $stmt_session->execute();
             $stmt_session->close();
         }else{
-            session_start();
             $session_id = uuidv4();
             session_id($session_id);
             $client_id = uuidv4();

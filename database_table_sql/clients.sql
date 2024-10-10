@@ -10,7 +10,7 @@ CREATE TABLE `clients` (
   `save_data` TEXT,
   `ip_address` VARCHAR(45),
   `malicious_level` INT(11) DEFAULT 0, 
-  `ban_time` TIMESTAMP, -- / time when the user is banned
+  `ban_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- / time when the user is banned
   `user_agent` VARCHAR(255),
   PRIMARY KEY (`session_id`),
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)

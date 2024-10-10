@@ -44,6 +44,7 @@ function manage_session($mysqli){
             $stmt_session->bind_result($loged_in,$user_id,$pages,$last_request,$ip,$agent);
             $stmt_session->fetch();
             $stmt_session->close();
+            $pages = json_decode($pages);
             if($ip != $_SERVER['REMOTE_ADDR']){
                 // create new session - proxy or vpn detected -  TODO: add client id carry over
                 // destroy session

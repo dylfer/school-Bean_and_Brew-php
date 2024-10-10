@@ -1,5 +1,6 @@
 <?php 
 use Firebase\JWT\JWT;
+require "../vendor/autoload.php";
 include 'components/session.php';
 if (isset($_POST['register'])) { 
     if ($_POST['csrf_token'] !== $_SESSION['csrf']) {

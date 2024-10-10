@@ -1,4 +1,6 @@
 <?php 
+use Firebase\JWT\JWT;
+require "../vendor/autoload.php";
 include 'functions/uuid.php';
 
 include 'components/session.php';

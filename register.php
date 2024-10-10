@@ -67,6 +67,7 @@ if (isset($_POST['register'])) {
     // Close the connection 
     $stmt->close();
 } else{
+    $error = "";
     $sucsess = "";
     $_SESSION['csrf'] = bin2hex(random_bytes(32));
 }
@@ -83,20 +84,21 @@ include 'components/DB_close.php';
 
         <link href="stlye.css" rel="stylesheet" type="text/css" />
     </head>
-        <body class="flex justify-center items-center w-screen h-screen">
+        <body class="flex flex-col justify-center items-center w-screen h-screen">
         <?php
             include 'components/nav.php';   
         ?>
             <div class="bg-slate-800 rounded-xl p-3">
-                <h1 class="text-white text-center">register</h1>
-                <form class="flex flex-col items-center justify-center" action="login.php" method="POST">
+                <h1 class="text-white text-2xl text-center">register</h1>
+                <form class="flex flex-col items-center justify-center" action="register.php" method="POST">
                     <input class="p-2 m-2" type="text" id="username" name="username" placeholder="username" required>
                     <input class="p-2 m-2" type="email" id="email" name="email" placeholder="email" required>
                     <input class="p-2 m-2" type="password" id="password" name="password" placeholder="password" required>
                     <input class="p-2 m-2" type="password" id="conf_password" name="conf_password" placeholder="confirm password" required>
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf']; ?>">
-                    <p class="text-red"><?= $sucsess;?></p>
-                    <button class="rounded bg-grey-700 p-1 m-1 text-white" type="submit " value="Login">submit</button>
+                    <p class="text-red"><?= $error;?></p>
+                    <p class="text-green"><?= $sucsess;?></p>
+                    <button class="rounded bg-grey-700 p-1 m-1 text-white" type="submit" value="Login">submit</button>
                 </form>
             </div>
             <?php
@@ -104,4 +106,3 @@ include 'components/DB_close.php';
         ?>  
         </body>
 </html>
-

@@ -1,7 +1,6 @@
 <?php 
 use Firebase\JWT\JWT;
 require "../vendor/autoload.php";
-include 'functions/uuid.php';
 
 include 'components/session.php';
 if (isset($_POST['login'])) { 
@@ -69,17 +68,18 @@ include 'components/DB_close.php';
     <meta name="keywords" content="login" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="text-center flex justify-center h-screen m-0">
+  <body class="flex justify-center items-center w-screen h-screen flex-col">
     <?php
       include 'components/nav.php'; 
     ?>
-    <div class=" mx-auto mt-5 bg-light">
-      <form class="card-body form-signin" action="login.php" method="post">
-        <h3 class="text-center mb-3">Login</h3>
+    <div class=" bg-slate-800 rounded-xl p-3 ">
+      <h3 class="text-center text-2xl text-white mb-3">Login</h3>
+      <form class="flex flex-col items-center justify-center bg-slate" action="login.php" method="POST">
+        
         <label for="username" class="sr-only">Username:</label>
         <input
           id="username"
-          class="form-control"
+          class="p-2 m-2"
           name="username"
           type="text"
           placeholder="Username"
@@ -89,7 +89,7 @@ include 'components/DB_close.php';
         <label for="password" class="sr-only">Password:</label>
         <input
           id="password"
-          class="form-control"
+          class="p-2 m-2"
           name="password"
           type="password"
           placeholder="Password"
@@ -98,7 +98,7 @@ include 'components/DB_close.php';
         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf']; ?>">
         <button
           name="login"
-          class="btn btn-lg btn-primary btn-block"
+          class="rounded bg-gray-700 m-1 text-white p-2 hover:bg-gray-900 rounded"
           type="submit"
           value="Login"
         >login</button>

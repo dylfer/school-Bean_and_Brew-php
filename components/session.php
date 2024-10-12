@@ -76,6 +76,7 @@ function manage_session($mysqli){
                 session_start();
                 $session_id = uuidv4();
                 session_id($session_id);
+                session_start();
                 setcookie('session_id', $session_id, time() + 3600);
                 $stmt_session = $mysqli->prepare("INSERT INTO clients (session_id,client_id,pages,ip_address,user_agent) VALUES (?, ?, ?, ?, ?)"); $stmt_session->bind_param("sssss", $session_id, $client_id, $pages, $_SERVER['REMOTE_ADDR'], $agent);
                 $stmt_session->execute();
@@ -102,7 +103,8 @@ function manage_session($mysqli){
             }else{
                 // update session data 
                 $pages[] = $_SERVER['REQUEST_URI'];
-                $stmt_session = $mysqli->prepare("UPDATE clients SET pages=? WHERE session_id = ?"); $stmt_session->bind_param("sss", $pages, $session_id);
+                $pages = json_encode($pages);
+                $stmt_session = $mysqli->prepare("UPDATE clients SET pages=? WHERE session_id = ?"); $stmt_session->bind_param("ss", $pages, $session_id);
                 $stmt_session->execute();
                 $stmt_session->close();
         
@@ -110,13 +112,16 @@ function manage_session($mysqli){
         }else{
             // create new session
             //$_SERVER['REMOTE_ADDR']
+            session_destroy();
             unset($_COOKIE['client_id']);
             unset($_COOKIE['session_id']);
-            $stmt_session = $mysqli->prepare("UPDATE clients SET malicious_level=malicious_level+10 , ban_time=?  WHERE ip_address=? "); $stmt_session->bind_param("ss", date('Y-m-d H:i:s'),$_SERVER['REMOTE_ADDR']);
+            $date = date('Y-m-d H:i:s');
+            $stmt_session = $mysqli->prepare("UPDATE clients SET malicious_level=malicious_level+10 , ban_time=?  WHERE ip_address=? "); $stmt_session->bind_param("ss", $date,$_SERVER['REMOTE_ADDR']);
             $stmt_session->execute();
             $stmt_session->close();
             $session_id = uuidv4();
             session_id($session_id);
+            session_start();
             $client_id = uuidv4();
             $_COOKIE["client_id"] = $client_id;
             $_SESSION["client_id"] = $client_id;
@@ -134,12 +139,14 @@ function manage_session($mysqli){
         // start session
         if (isset($_COOKIE["session_id"])){
             session_id($_COOKIE["session_id"]);
+            session_start();
             manage_session($mysqli);
 
         }else if (isset($_COOKIE["client_id"])){
             $client_id = $_COOKIE["client_id"];
             $session_id = uuidv4();
             session_id($session_id);
+            session_start();
             setcookie('session_id', $session_id, time() + 3600);
             $pages = array();
             $pages[] = $_SERVER['REQUEST_URI'];
@@ -152,6 +159,7 @@ function manage_session($mysqli){
         }else{
             $session_id = uuidv4();
             session_id($session_id);
+            session_start();
             $client_id = uuidv4();
             $_COOKIE["client_id"] = $client_id;
             $_SESSION["client_id"] = $client_id;

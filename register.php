@@ -1,13 +1,24 @@
 <?php 
-use Firebase\JWT\JWT;
-require "../vendor/autoload.php";
+// use Firebase\JWT\JWT;
+// require "../vendor/autoload.php";
 include 'components/session.php';
-if (isset($_POST['register'])) { 
-    if ($_POST['csrf_token'] !== $_SESSION['csrf']) {
-        $error = "Invalid CSRF token";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') { 
+    if (isset($_SESSION["authenticated"])){
+        if ($_SESSION["authenticated"] == true) {
+          header("Location: dashboard.php");
+          die();
+        }
+      }
+    if ( ! isset($_SESSION["csrf"]) || ! isset($_POST['csrf_token'])){
+        $error = "missing crsf token";
+        header("Location: /school-bean_and_brew-php/register.php");
         die();
     }
-    require "../vendor/autoload.php";
+    if ($_POST['csrf_token'] !== $_SESSION['csrf']) {
+        $error = "Invalid CSRF token";
+        header("Location: /school-bean_and_brew-php/register.php");
+        die();
+    }
     
     $error = False;
     $username = htmlspecialchars(stripslashes(trim($_POST['username']))); $email = htmlspecialchars(stripslashes(trim($_POST['email']))); $password = htmlspecialchars(stripslashes(trim($_POST['password']))); 
@@ -37,7 +48,12 @@ if (isset($_POST['register'])) {
         $error = "Invalid email format";
     }
 
+    if (! "the"){
+        echo "test";
+    }
+
     if (! $error){
+        echo "no error";
         $token_secret = bin2hex(random_bytes(32));
         
         $stmt = $mysqli->prepare("INSERT INTO users (username, email, password, token_secret) VALUES (?, ?, ?, ?)"); $stmt->bind_param("ssss", $username, $email, $password,$token_secret);
@@ -45,7 +61,8 @@ if (isset($_POST['register'])) {
         $password = hash_hmac('sha256', $password, $token_secret);
         if ($stmt->execute()) {
             #login code
-            $token = JWT::encode(["id"=>session_id(),"username"=>$username,"user_id"=>$user_id],$token_secret,'HS512');# add more to payload TOOD get user_id
+            // $token = JWT::encode(["id"=>session_id(),"username"=>$username,"user_id"=>$user_id],$token_secret,'HS512');# add more to payload TOOD get user_id
+            $token = "test";
             $stmt_login = $mysqli->prepare("UPDATE clients SET token=?, user_id=?, login_status=? WHERE session_id=? "); $stmt_login->bind_param("ssss", $token, $user_id, true, session_id());
             $stmt_login->execute();
             $stmt_login->close();
@@ -65,6 +82,8 @@ if (isset($_POST['register'])) {
 
     }
     // Close the connection 
+    echo $error;
+    echo $sucsess;
     $stmt->close();
 } else{
     $error = "";
@@ -82,12 +101,14 @@ include 'components/DB_close.php';
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Register</title>
 
-        <link href="stlye.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.tailwindcss.com"></script>
     </head>
-        <body class="flex flex-col justify-center items-center w-screen h-screen">
+        <body class="flex justify-center items-center w-screen flex-col overflow-x-hidden scrollbar-none">
         <?php
             include 'components/nav.php';   
         ?>
+        <div class="h-screen grow flex items-center justify-center">
+
             <div class="bg-slate-800 rounded-xl p-3">
                 <h1 class="text-white text-2xl text-center">register</h1>
                 <form class="flex flex-col items-center justify-center" action="register.php" method="POST">
@@ -101,8 +122,9 @@ include 'components/DB_close.php';
                     <button class="rounded bg-grey-700 p-1 m-1 text-white" type="submit" value="Login">submit</button>
                 </form>
             </div>
+            </div>
             <?php
             include 'components/footer.php';
-        ?>  
+            ?>  
         </body>
 </html>

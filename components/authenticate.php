@@ -2,10 +2,17 @@
 // use Firebase\JWT\JWT;
 // require "../vendor/autoload.php";
 if ( ! isset($_SESSION["authenticated"])){
-    echo "d";
-    // header("Location: login.php");
-    // die();
+    $_SESSION["authenticated"] = false;
+    try{
+        unset($_SESSION["username"]);
+        unset($_SESSION["token"]);
+        unset($_SESSION["user_id"]);
+    }catch (Exception $e) {
+        
+    }
+    echo ""
 }
+
 if ( $_SESSION["authenticated"] == false) {
     try{
         // TODO try unset auith session data (might not even be set)

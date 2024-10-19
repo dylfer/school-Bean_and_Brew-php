@@ -2,7 +2,9 @@
 // use Firebase\JWT\JWT;
 // require "../vendor/autoload.php";
 if ( ! isset($_SESSION["authenticated"])){
-
+    echo "d";
+    // header("Location: login.php");
+    // die();
 }
 if ( $_SESSION["authenticated"] == false) {
     try{
@@ -14,8 +16,9 @@ if ( $_SESSION["authenticated"] == false) {
     }catch (Exception $e) {
         
     }
-    header("Location: login.php");
-    die();
+    echo "e";
+    // header("Location: login.php");
+    // die();
 }
 $session_id = session_id();
 $stmt_session = $mysqli->prepare("SELECT login_status, user_id FROM clients WHERE session_id=?"); $stmt_session->bind_param("s", $session_id);
@@ -26,11 +29,13 @@ $stmt_session->fetch();
 $stmt_session->close();
 if ($loged_in == false) {
     // TODO unset auth session data 
-    header("Location: login.php");
-    die();
+    echo "a";
+    // header("Location: login.php");
+    // die();
 }
 
-
+echo $_SESSION["username"];
+echo $user_id;
 $stmt_auth = $mysqli->prepare("SELECT token_secret FROM users WHERE id = ? AND  username = ?"); $stmt_auth->bind_param("is", $user_id, $_SESSION["username"]);
 $stmt_auth->execute(); $stmt_auth->store_result(); 
 
@@ -55,14 +60,16 @@ if ($stmt_auth->num_rows > 0 ) {
     else{
         // invalid token
         // TODO clear auth session data 
-        header("Location: login.php");
-        die();
+        echo "b";
+        // header("Location: login.php");
+        // die();
     };
 
 }else{
     // inconsistency in session data (username, user_id, session_id, login_status)
     // TODO clear auth session data 
-    header("Location: login.php");
-    die();
+    echo "na";
+    // header("Location: login.php");
+    // die();
     
 };

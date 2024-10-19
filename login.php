@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $token = "test";
       $session_id = session_id();
       $bool = true;
-      $stmt_login = $mysqli->prepare("UPDATE clients SET token=?, user_id=?, login_status=? WHERE session_id=? "); $stmt_login->bind_param("ssss", $token, $user_id, $bool, $session_id);
+      $stmt_login = $mysqli->prepare("UPDATE clients SET token=?, user_id=?, login_status=? WHERE session_id=? "); $stmt_login->bind_param("siss", $token, $id, $bool, $session_id);
       $stmt_login->execute();
       $stmt_login->close();
       $_SESSION['authenticated'] = true;
@@ -57,12 +57,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $_SESSION['token'] = $token;
       $_SESSION['user_id'] = $user_id;
       $_COOKIE['token'] = $token;
-      // Redirect to the user's dashboard 
-      header("Location: /school-Bean_and_Brew-php/dashboard.php"); 
-      die(); 
-    } else { 
-      $response =  "invalid crdentials!"; 
-    } 
+      // Redirect to the user's dashboard
+      header("Location: /school-Bean_and_Brew-php/dashboard.php");
+      die();
+    } else {
+      $response =  "invalid crdentials!";
+    }
   } else { 
     $response = "invalid crdentials!"; 
   } 

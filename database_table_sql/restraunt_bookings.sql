@@ -1,4 +1,4 @@
-CREATE TABLE `bookings` (
+CREATE TABLE `restraunt_bookings` (
   `booking_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11),
   `name` varchar(50) NOT NULL,

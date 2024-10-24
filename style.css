@@ -1,0 +1,76 @@
+body {
+  margin: 0px;
+  text-align: center;
+  overflow: hidden;
+  overflow-y: scroll;
+  /* max-width: 1600px; */
+  background-color: (243, 243, 243);
+}
+.nav {
+  /* max-width: 1600px; */
+  /* width: 100vw; */
+  display: flex;
+  overflow: hidden;
+
+  flex-wrap: wrap;
+}
+.nav-trailing {
+  margin-left: auto;
+}
+/* .nav-logo{}
+  .nav-start{} */
+.nav-start a,
+.nav-trailing a {
+  text-decoration: none;
+  padding: 15px 20px;
+}
+.main {
+  margin-right: 15px;
+}
+.main h1 {
+  font-size: 1.25rem;
+  line-height: 1.5;
+  margin-bottom: 0.7em;
+  margin-top: 2em;
+  font-weight: bold;
+}
+
+.section {
+  width: calc(100vw - 15px);
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.text-wraper {
+  width: 55vw;
+}
+.text {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero-image {
+  width: 1333px;
+  background-position: 50% 50%;
+  min-height: calc(100vh - 120px);
+  background-size: cover;
+}
+
+/* .hero-image{
+      width:calc(100vw - 150px);
+      margin:75px;
+      height:80vh
+  } */
+.break {
+  flex-basis: 100%;
+  height: 0;
+}
+/* .hero-text{
+      position: absolute;
+      top:50vh;
+      left:calc(50vw - 230px);
+  } */
+
+@media screen and (maxwidth: 1000px) {
+  /* difrence between small and big scrrean layout   */
+}

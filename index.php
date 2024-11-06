@@ -4,7 +4,7 @@
 ?>
 
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -28,7 +28,7 @@
       ?>
     <script src="script.js"></script>
   </body>
-</html>
+</html> -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -69,8 +69,8 @@
             <a class="p-2" href="#">More +</a>
           </div>
           <div class="nav-trailing inline">
-            <a class="text-blue-700" href="/login">login</a>
-            <a class="" href="/register">sign up</a>
+            <a class="text-blue-700" href="login.php">login</a>
+            <a class="" href="register.php">sign up</a>
           </div>
         </div>
         <div class="break h-0.5 w-full bg-gray-100"></div>

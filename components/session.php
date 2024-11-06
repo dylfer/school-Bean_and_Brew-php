@@ -1,6 +1,7 @@
 <?php
 include 'functions/uuid.php';
 include 'components/DB_conect.php';
+session_start();
 
 
 function ban($malicious_level,$ban_time){

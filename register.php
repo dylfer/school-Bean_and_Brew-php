@@ -1,12 +1,14 @@
 <?php 
 // use Firebase\JWT\JWT;
 // require "../vendor/autoload.php";
+$error = "";
+$sucsess = "";
 include 'components/session.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') { 
     if (isset($_SESSION["authenticated"])){
         if ($_SESSION["authenticated"] == true) {
-          header("Location: dashboard.php");
-          die();
+        //   header("Location: dashboard.php");
+        //   die();
         }
       }
     if ( ! isset($_SESSION["csrf"]) || ! isset($_POST['csrf_token'])){
@@ -48,46 +50,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = "Invalid email format";
     }
 
-    if (! "the"){
-        echo "test";
-    }
-
     if (! $error){
-        echo "no error";
         $token_secret = bin2hex(random_bytes(32));
-        
-        $stmt = $mysqli->prepare("INSERT INTO users (username, email, password, token_secret) VALUES (?, ?, ?, ?)"); $stmt->bind_param("ssss", $username, $email, $password,$token_secret);
-
         $password = hash_hmac('sha256', $password, $token_secret);
-        if ($stmt->execute()) {
+        try{
+            $stmt = $mysqli->prepare("INSERT INTO users (username, email, password, token_secret) VALUES (?, ?, ?, ?)"); $stmt->bind_param("ssss", $username, $email, $password,$token_secret);
+            $stmt->execute();
+            $stmt->close();
+
+        }catch (Exception $e) {
+            $error = "username or email is already in use";
+        }
+
+        if (! $error){
+            $stmt = $mysqli->prepare("SELECT id FROM users WHERE username = ? AND email = ?"); $stmt->bind_param("ss", $username, $email);
+            $stmt->execute(); $stmt->store_result();
+            $stmt->bind_result($user_id);
+            $stmt->fetch();
+            $stmt->close();
+
             #login code
             // $token = JWT::encode(["id"=>session_id(),"username"=>$username,"user_id"=>$user_id],$token_secret,'HS512');# add more to payload TOOD get user_id
             $token = "test";
-            $stmt_login = $mysqli->prepare("UPDATE clients SET token=?, user_id=?, login_status=? WHERE session_id=? "); $stmt_login->bind_param("ssss", $token, $user_id, true, session_id());
+            $id = session_id();
+            $t = true;
+            $stmt_login = $mysqli->prepare("UPDATE clients SET token=?, user_id=?, login_status=? WHERE session_id=? "); $stmt_login->bind_param("ssss", $token, $user_id, $t, $id);
             $stmt_login->execute();
             $stmt_login->close();
+
             $_SESSION['authenticated'] = true;
             $_SESSION['username'] = $username;
             $_SESSION['token'] = $token;
             $_SESSION['user_id'] = $user_id;
-            $_COOKIE['token'] = $token;
+            setcookie('token', $token);
             $sucsess = "New account created successfully!";
-            header("shcool-Bean_and_Brew-php/dashboard.php"); 
-
-        } else { 
-            echo "Error: " . $stmt->error; 
+            header("location:/school-bean_and_brew-php/dashboard.php"); 
         }
-
-
-
     }
-    // Close the connection 
-    echo $error;
-    echo $sucsess;
-    $stmt->close();
+    // echo $error;
+    // echo $sucsess;
+
 } else{
-    $error = "";
-    $sucsess = "";
+
     $_SESSION['csrf'] = bin2hex(random_bytes(32));
 }
 include 'components/DB_close.php';
@@ -117,8 +121,8 @@ include 'components/DB_close.php';
                     <input class="p-2 m-2" type="password" id="password" name="password" placeholder="password" required>
                     <input class="p-2 m-2" type="password" id="conf_password" name="conf_password" placeholder="confirm password" required>
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf']; ?>">
-                    <p class="text-red"><?= $error;?></p>
-                    <p class="text-green"><?= $sucsess;?></p>
+                    <p class="text-red-800 text-xl"><?= $error;?></p>
+                    <p class="text-green-800 text-xl"><?= $sucsess;?></p>
                     <button class="rounded bg-grey-700 p-1 m-1 text-white" type="submit" value="Login">submit</button>
                 </form>
             </div>

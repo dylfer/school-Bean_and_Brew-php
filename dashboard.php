@@ -20,15 +20,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="stlye.css" rel="stylesheet" type="text/css" />
   </head>
-  <body>
+  <body class="overflow-x-hidden ">
     <?php
       include 'components/nav.php';
     ?>
+    <div class="h-screen text-center text-4xl">
+      content
+    </div>
 
-
-
-
-
+    
     <?php
       include 'components/footer.php';
     ?>

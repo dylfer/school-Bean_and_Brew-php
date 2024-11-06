@@ -6,18 +6,18 @@ include 'components/session.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') { 
   if (isset($_SESSION["authenticated"])){
     if ($_SESSION["authenticated"] == true) {
-      header("Location: dashboard.php");
-      die();
+      // header("Location: dashboard.php");
+      // die();
     }
   }
   if ( ! isset($_SESSION["csrf"]) || ! isset($_POST['csrf_token'])){
     $error = "missing crsf token";
-    header("Location: /school-bean_and_brew-php/register.php");
+    header("Location: /school-bean_and_brew-php/login.php");
     die();
   }
   if ($_POST['csrf_token'] !== $_SESSION['csrf']) {
       $error = "Invalid CSRF token";
-      header("Location: /school-bean_and_brew-php/register.php");
+      header("Location: /school-bean_and_brew-php/login.php");
       die();
   }
   // TODO add check for email in username so sigin with either email or username
@@ -43,7 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Verify the password 
     if (hash_hmac('sha256', $password, $token_secret) == $hashed_password){ 
-
+      $stmt = $mysqli->prepare("SELECT id FROM users WHERE username = ?"); $stmt->bind_param("s", $username);
+      $stmt->execute(); $stmt->store_result();
+      $stmt->bind_result($user_id);
+      $stmt->fetch();
+      $stmt->close();
       // Set the session variables 
       // $token = JWT::encode(["id"=>session_id(),"username"=>$username,"user_id"=>$user_id],$token_secret,'HS512');# add more to payload TOOD get user_id
       $token = "test";
@@ -56,7 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $_SESSION['username'] = $username;
       $_SESSION['token'] = $token;
       $_SESSION['user_id'] = $user_id;
-      $_COOKIE['token'] = $token;
+      setcookie('token', $token);
+
       // Redirect to the user's dashboard
       header("Location: /school-Bean_and_Brew-php/dashboard.php");
       die();

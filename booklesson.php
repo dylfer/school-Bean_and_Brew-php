@@ -1,6 +1,6 @@
 <?php
 require 'components/session.php';
-
+require 'components/DB_close.php'
 
 ?>
 <!DOCTYPE html>
